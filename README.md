@@ -51,53 +51,7 @@ Doação → Recebimento → Triagem → Reparo ou Reciclagem → Solicitação 
 
 ## 🔄 Fluxo principal
 
-```mermaid
-flowchart LR
-    classDef acao fill:#dbeafe,stroke:#3b82f6,color:#0f172a
-    classDef positivo fill:#dcfce7,stroke:#22c55e,color:#0f172a
-    classDef analise fill:#ffedd5,stroke:#f97316,color:#0f172a
-    classDef pendencia fill:#fee2e2,stroke:#ef4444,color:#0f172a
-    classDef marco fill:#1f2937,stroke:#111827,color:#ffffff
-
-    subgraph FLUXO_EQ["1 · Fluxo do equipamento"]
-        direction LR
-        eq_ini([Início]):::marco --> eq_cad["Cadastrar doação<br/>Doador informa o equipamento"]:::acao
-        eq_cad --> eq_rec["Confirmar recebimento<br/>Organização parceira"]:::acao
-        eq_rec --> eq_tri["Realizar triagem<br/>Equipe técnica avalia o item"]:::analise
-        eq_tri --> eq_cond{"Condição do equipamento?"}:::analise
-        eq_cond -- "Pronto" --> eq_disp["Disponibilizar equipamento<br/>Item pronto para destinação"]:::positivo
-        eq_cond -- "Peças / reciclagem" --> eq_dest["Registrar destinação ambiental<br/>Peças ou reciclagem"]:::pendencia
-        eq_cond -- "Reparo" --> eq_rep["Executar reparo<br/>Registrar serviço e peças"]:::analise
-        eq_rep --> eq_apr{"Reparo aprovado?"}:::analise
-        eq_apr -- "Sim" --> eq_disp
-        eq_apr -- "Não" --> eq_dest
-        eq_dest --> eq_fim([Fim]):::marco
-    end
-
-    subgraph FLUXO_SOL["2 · Fluxo da solicitação"]
-        direction LR
-        sol_ini([Início]):::marco --> sol_reg["Registrar solicitação<br/>Necessidade do beneficiário"]:::acao
-        sol_reg --> sol_val["Validar solicitação<br/>ONG ou instituição parceira"]:::acao
-        sol_val --> sol_apr{"Solicitação aprovada?"}:::analise
-        sol_apr -- "Sim" --> sol_fila["Incluir na fila<br/>Solicitação apta à associação"]:::positivo
-        sol_apr -- "Não" --> sol_pend["Notificar pendência<br/>Complementar ou encerrar"]:::pendencia
-    end
-
-    subgraph FLUXO_DST["3 · Associação, entrega e encerramento"]
-        direction TB
-        dst_assoc["Associar equipamento à solicitação<br/>Processo manual realizado pelo administrador ou ONG"]:::acao
-        dst_assoc --> dst_res["Reservar equipamento<br/>Bloquear dupla destinação"]:::acao
-        dst_res --> dst_ent["Registrar entrega<br/>Data, responsável e organização"]:::positivo
-        dst_ent --> dst_conf["Confirmar recebimento<br/>Beneficiário ou instituição confirma"]:::positivo
-        dst_conf --> dst_ind["Atualizar indicadores<br/>Recebidos · recuperados · entregues · reciclados"]:::positivo
-        dst_ind --> dst_fim([Fim]):::marco
-    end
-
-    eq_disp -- "Equipamento disponível" --> dst_assoc
-    sol_fila -- "Solicitação aprovada" --> dst_assoc
-```
-
-_Legenda: 🔵 ação do sistema · 🟢 resultado positivo · 🟠 análise técnica · 🔴 pendência ou descarte._
+![Diagrama do fluxo principal do software](docs/fluxo-principal.png)
 
 1. A pessoa doadora cadastra o equipamento.
 2. A organização parceira confirma o recebimento.
